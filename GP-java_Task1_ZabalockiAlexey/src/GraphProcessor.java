@@ -116,6 +116,22 @@ public class GraphProcessor {
         g.addEdge(2, 7, 6);
         g.addEdge(2, 5, 1);
 
+
+        Map<Integer, String> edgeToPosition = new HashMap();
+        edgeToPosition.put(0, "[0][0]");
+        edgeToPosition.put(1, "[1][0]");
+        edgeToPosition.put(2, "[2][0]");
+        edgeToPosition.put(3, "[0][1]");
+        edgeToPosition.put(4, "[0][2]");
+        edgeToPosition.put(5, "[1][1]");
+        edgeToPosition.put(6, "[1][2]");
+        edgeToPosition.put(7, "[2][1]");
+        edgeToPosition.put(8, "[2][2]");
+
+
+
+        /*edgeToPosition.get(0) will return “[0][0]”*/
+
         List<Integer> list = new ArrayList<>();
         list.add(1);
         list.add(2);
@@ -127,12 +143,15 @@ public class GraphProcessor {
         }
 
         List<Integer> result = new ArrayList<>();
+        Map<String, Integer> map = new HashMap<>();
         for (int i = 0; i < g.verticesNum; i++) {
             int max = Integer.MIN_VALUE;
+            int index = 0;
             for (int j = 0; j < list.size(); j++) {
                 int value = resultArray.get(j)[i];
                 if (max < value) {
                     max = value;
+                    index= j;
                 }
             }
             result.add(max);
@@ -141,9 +160,8 @@ public class GraphProcessor {
         System.out.println("all longest paths tree from initialVertex: ");
 
         for (int i = 0; i < result.size(); i++) {
-            System.out.println("initialVertex -> [" + i + "] " + result.get(i));
+            System.out.println("initialVertex -> " + edgeToPosition.get(i)+ "= " + result.get(i));
         }
-
         int max = 0;
         int max_index = 0;
         for (int i = 0; i < result.size(); i++) {
