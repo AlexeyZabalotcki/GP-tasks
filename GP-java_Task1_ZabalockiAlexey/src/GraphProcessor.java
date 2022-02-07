@@ -103,19 +103,18 @@ public class GraphProcessor {
     public static void main(String[] args) {
         GraphProcessor.Graph g = new Graph(9);
         g.addEdge(0, 3, 3);
-        g.addEdge(3, 4, 3);             //vertex indexes: 0->[0][0]
-        g.addEdge(3, 6, 4);             //                1->[1][0]
-        g.addEdge(0, 5, 1);             //                2->[2][0]
-        g.addEdge(5, 8, 4);             //                3->[0][1]
-        g.addEdge(5, 6, 4);             //                4->[0][2]
-        g.addEdge(1, 3, 3);             //                5->[1][1]
-        g.addEdge(1, 5, 1);             //                6->[1][2]
-        g.addEdge(1, 7, 6);             //                7->[2][1]
-        g.addEdge(7, 6, 4);             //                8->[2][2]
+        g.addEdge(3, 4, 3);
+        g.addEdge(3, 6, 4);
+        g.addEdge(0, 5, 1);
+        g.addEdge(5, 8, 4);
+        g.addEdge(5, 6, 4);
+        g.addEdge(1, 3, 3);
+        g.addEdge(1, 5, 1);
+        g.addEdge(1, 7, 6);
+        g.addEdge(7, 6, 4);
         g.addEdge(7, 8, 4);
         g.addEdge(2, 7, 6);
         g.addEdge(2, 5, 1);
-
 
         Map<Integer, String> edgeToPosition = new HashMap();
         edgeToPosition.put(0, "[0][0]");
@@ -128,10 +127,6 @@ public class GraphProcessor {
         edgeToPosition.put(7, "[2][1]");
         edgeToPosition.put(8, "[2][2]");
 
-
-
-        /*edgeToPosition.get(0) will return “[0][0]”*/
-
         List<Integer> list = new ArrayList<>();
         list.add(1);
         list.add(2);
@@ -143,15 +138,12 @@ public class GraphProcessor {
         }
 
         List<Integer> result = new ArrayList<>();
-        Map<String, Integer> map = new HashMap<>();
         for (int i = 0; i < g.verticesNum; i++) {
             int max = Integer.MIN_VALUE;
-            int index = 0;
             for (int j = 0; j < list.size(); j++) {
                 int value = resultArray.get(j)[i];
                 if (max < value) {
                     max = value;
-                    index= j;
                 }
             }
             result.add(max);
@@ -164,9 +156,9 @@ public class GraphProcessor {
         }
         int max = 0;
         int max_index = 0;
-        for (int i = 0; i < result.size(); i++) {
-            if (result.get(i) > max) {
-                max = result.get(i);
+        for (Integer integer : result) {
+            if (integer > max) {
+                max = integer;
                 max_index = max;
             }
         }
