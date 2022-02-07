@@ -1,49 +1,60 @@
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
 
 public class GraphProcessor {
     static class AdjListNode {
         int vertex;
         int weight;
 
-        AdjListNode(int vertex, int weight)
-        {
+        AdjListNode(int vertex, int weight) {
             this.vertex = vertex;
             this.weight = weight;
         }
-        int getVertex() { return vertex; }
-        int getWeight() { return weight; }
+
+        int getVertex() {
+            return vertex;
+        }
+
+        int getWeight() {
+            return weight;
+        }
     }
 
     static class Graph {
         int verticesNum;
         ArrayList<ArrayList<AdjListNode>> adj;
 
-        Graph(int verticesNum)
-        {
+        Graph(int verticesNum) {
             this.verticesNum = verticesNum;
             adj = new ArrayList<>(verticesNum);
 
-            for(int i = 0; i < verticesNum; i++){
+            for (int i = 0; i < verticesNum; i++) {
                 adj.add(new ArrayList<>());
             }
         }
 
-        void addEdge(int u, int v, int weight)
-        {
+        void addEdge(int u, int v, int weight) {
             AdjListNode node = new AdjListNode(v, weight);
             adj.get(u).add(node);
         }
 
+        int findLongest(int u) {
+            ArrayList<AdjListNode> adjListNodes = adj.get(u);
+            int max = Integer.MIN_VALUE;
+            for (AdjListNode adjListNode : adjListNodes) {
+                if (max < adjListNode.getWeight()) {
+                    max = adjListNode.getWeight();
+                }
+            }
+            return max;
+        }
+
         void topologicalSortUtil(int v, boolean[] visited,
-                                 Stack<Integer> stack)
-        {
+                                 Stack<Integer> stack) {
             visited[v] = true;
 
-            for (int i = 0; i<adj.get(v).size(); i++) {
+            for (int i = 0; i < adj.get(v).size(); i++) {
                 AdjListNode node = adj.get(v).get(i);
-                if (!visited[node.getVertex()]){
+                if (!visited[node.getVertex()]) {
                     topologicalSortUtil(node.getVertex(), visited, stack);
                 }
             }
@@ -51,57 +62,45 @@ public class GraphProcessor {
             stack.push(v);
         }
 
-        void longestPath(int s, int weight)
-        {
+        int[] longestPath(int s, int weight) {
             Stack<Integer> stack = new Stack<>();
             int[] dist = new int[verticesNum];
 
             boolean[] visited = new boolean[verticesNum];
-            for (int i = 0; i < verticesNum; i++){
+            for (int i = 0; i < verticesNum; i++) {
                 visited[i] = false;
             }
 
-            for (int i = 0; i < verticesNum; i++){
-                if (!visited[i]){
+            for (int i = 0; i < verticesNum; i++) {
+                if (!visited[i]) {
                     topologicalSortUtil(i, visited, stack);
                 }
             }
 
-            for (int i = 0; i < verticesNum; i++){
+            for (int i = 0; i < verticesNum; i++) {
                 dist[i] = Integer.MIN_VALUE;
             }
 
             dist[s] = weight;
 
-            while (!stack.isEmpty())
-            {
+            while (!stack.isEmpty()) {
                 int u = stack.peek();
                 stack.pop();
 
-                if (dist[u] != Integer.MIN_VALUE)
-                {
-                    for (int i = 0; i<adj.get(u).size(); i++)
-                    {
+                if (dist[u] != Integer.MIN_VALUE) {
+                    for (int i = 0; i < adj.get(u).size(); i++) {
                         AdjListNode node = adj.get(u).get(i);
-                        if (dist[node.getVertex()] < dist[u] + node.getWeight()){
+                        if (dist[node.getVertex()] < dist[u] + node.getWeight()) {
                             dist[node.getVertex()] = dist[u] + node.getWeight();
                         }
                     }
                 }
             }
-
-            for (int i = 0; i < verticesNum; i++) {
-                if (dist[i] == Integer.MIN_VALUE) {
-                    continue;
-                } else {
-                    System.out.print("index: " + i + " = " + (dist[i]) + ";\n");
-                }
-            }
+            return dist;
         }
     }
 
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) {
         GraphProcessor.Graph g = new Graph(9);
         g.addEdge(0, 3, 3);
         g.addEdge(3, 4, 3);             //vertex indexes: 0->[0][0]
@@ -122,10 +121,40 @@ public class GraphProcessor {
         list.add(2);
         list.add(0);
 
+        List<int[]> resultArray = new ArrayList<>();
         for (int i = 0; i < list.size(); i++) {
-            System.out.print("The longest distances from source vertex " + i + "\n");
-            g.longestPath(i, list.get(i));
+            resultArray.add(g.longestPath(i, list.get(i)));
         }
 
+        List<Integer> result = new ArrayList<>();
+        for (int i = 0; i < g.verticesNum; i++) {
+            int max = Integer.MIN_VALUE;
+            for (int j = 0; j < list.size(); j++) {
+                int value = resultArray.get(j)[i];
+                if (max < value) {
+                    max = value;
+                }
+            }
+            result.add(max);
+        }
+
+        System.out.println("all longest paths tree from initialVertex: ");
+
+        for (int i = 0; i < result.size(); i++) {
+            System.out.println("initialVertex -> [" + i + "] " + result.get(i));
+        }
+
+        int max = 0;
+        int max_index = 0;
+        for (int i = 0; i < result.size(); i++) {
+            if (result.get(i) > max) {
+                max = result.get(i);
+                max_index = max;
+            }
+        }
+        System.out.println("longest path tree from vertex 'initialVertex' = " + max_index);
     }
 }
+
+
+
